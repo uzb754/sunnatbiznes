@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mening butkim</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#f4f6fb;color:#1a1a1a}
+.app{max-width:720px;margin:0 auto;padding:1rem}
+.header{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:#fff;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:1rem}
+.logo{width:44px;height:44px;border-radius:8px;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:22px}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px}
+.nav2{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:1rem}
+.nav-btn{padding:10px 4px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;font-size:12px;color:#6b7280;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s}
+.nav-btn:hover{background:#f9fafb}
+.nav-btn.active{border-color:#378ADD;color:#185FA5;background:#E6F1FB}
+.nav-btn i{font-size:18px}
+.section{display:none}
+.section.active{display:block}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.card h2{font-size:15px;font-weight:500;margin-bottom:1rem;color:#1a1a1a;display:flex;align-items:center;gap:6px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:12px;color:#6b7280}
+.form-group input,.form-group select{border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;font-size:14px;outline:none;background:#fff;color:#1a1a1a}
+.form-group input:focus,.form-group select:focus{border-color:#378ADD}
+.btn-primary{background:#378ADD;color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;width:100%;margin-top:8px}
+.btn-primary:hover{background:#185FA5}
+.btn-primary:disabled{background:#93c5fd;cursor:not-allowed}
+.btn-danger{background:#ef4444;color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;width:100%;margin-top:8px}
+.btn-danger:hover{background:#dc2626}
+.btn-danger:disabled{background:#fca5a5;cursor:not-allowed}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px}
+.stats-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem}
+.stat{border-radius:10px;padding:14px 12px;text-align:center}
+.stat.green{background:#ECFDF5;border:1px solid #A7F3D0}
+.stat.red{background:#FEF2F2;border:1px solid #FECACA}
+.stat.blue{background:#EFF6FF;border:1px solid #BFDBFE}
+.stat.yellow{background:#FFFBEB;border:1px solid #FDE68A}
+.stat.purple{background:#F5F3FF;border:1px solid #DDD6FE}
+.stat.gray{background:#F9FAFB;border:1px solid #E5E7EB}
+.stat .val{font-size:16px;font-weight:600;color:#1a1a1a;line-height:1.2}
+.stat .lbl{font-size:11px;color:#6b7280;margin-top:3px}
+
+/* CHART */
+.chart-wrap{margin-bottom:1rem}
+.chart-title{font-size:13px;font-weight:500;color:#374151;margin-bottom:8px}
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:80px;padding:0 2px}
+.bar-col{display:flex;flex-direction:column;align-items:center;flex:1;gap:2px}
+.bar-col .bar-in{width:100%;border-radius:4px 4px 0 0;min-height:2px;transition:height .3s}
+.bar-col .bar-lbl{font-size:9px;color:#9ca3af;white-space:nowrap}
+.bar-col .bar-val{font-size:9px;color:#374151;font-weight:500}
+
+/* TXNS */
+.txn-list{display:flex;flex-direction:column;gap:6px}
+.txn-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f9fafb;border-radius:8px;font-size:13px}
+.txn-item .ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.txn-item .info{flex:1;min-width:0}
+.txn-item .name{font-weight:500;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txn-item .time{font-size:11px;color:#6b7280}
+.amt-plus{font-weight:600;color:#059669;white-space:nowrap}
+.amt-minus{font-weight:600;color:#ef4444;white-space:nowrap}
+.txn-item .del-btn{background:none;border:none;cursor:pointer;color:#d1d5db;font-size:15px;padding:4px 2px;border-radius:6px;line-height:1;flex-shrink:0}
+.txn-item .del-btn:hover{color:#ef4444;background:#fee2e2}
+.badge{display:inline-block;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:500}
+.badge-radar{background:#EEEDFE;color:#3C3489}
+.badge-karta{background:#E6F1FB;color:#0C447C}
+.badge-ksero{background:#EAF3DE;color:#27500A}
+.badge-naqt{background:#FEF9C3;color:#854D0E}
+.badge-karta-tolov{background:#DBEAFE;color:#1E40AF}
+.tolov-row{display:flex;gap:8px;margin-bottom:10px}
+.tolov-btn{flex:1;padding:9px;border:2px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:#6b7280;text-align:center;transition:all .15s}
+.tolov-btn.sel-naqt{border-color:#F59E0B;background:#FFFBEB;color:#92400E}
+.tolov-btn.sel-karta{border-color:#3B82F6;background:#EFF6FF;color:#1E40AF}
+.empty{text-align:center;color:#9ca3af;font-size:13px;padding:2rem 0}
+.alert{padding:10px 14px;background:#EAF3DE;border-radius:8px;font-size:13px;color:#27500A;margin-top:8px;display:none}
+.alert-err{background:#fee2e2;color:#991b1b}
+.loading{text-align:center;color:#6b7280;font-size:13px;padding:1.5rem 0}
+.foyda-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F0FDF4;border:1px solid #A7F3D0;border-radius:10px;margin-bottom:10px}
+.foyda-row .fl{font-size:13px;color:#065F46;font-weight:500}
+.foyda-row .fv{font-size:16px;color:#059669;font-weight:700}
+.filter-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.filter-btn{padding:5px 12px;border-radius:20px;border:1px solid #e5e7eb;background:#fff;font-size:12px;cursor:pointer;color:#6b7280}
+.filter-btn.active{background:#378ADD;color:#fff;border-color:#378ADD}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">📡</div>
+    <div>
+      <div style="font-weight:500;font-size:16px">Mening butkim</div>
+      <div style="font-size:12px;color:#6b7280">Xizmatlar boshqaruvi</div>
+    </div>
+    <div style="margin-left:auto;font-size:13px;color:#6b7280" id="sana"></div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="showTab('hisobot')" id="tab-hisobot"><i class="ti ti-chart-bar"></i>Hisobot</button>
+    <button class="nav-btn" onclick="showTab('radar')" id="tab-radar"><i class="ti ti-radar"></i>Radar</button>
+    <button class="nav-btn" onclick="showTab('karta')" id="tab-karta"><i class="ti ti-credit-card"></i>Karta</button>
+    <button class="nav-btn" onclick="showTab('ksero')" id="tab-ksero"><i class="ti ti-copy"></i>Ksero</button>
+  </div>
+  <div class="nav2">
+    <button class="nav-btn" onclick="showTab('flesh')" id="tab-flesh"><i class="ti ti-usb"></i>Flesh</button>
+    <button class="nav-btn" onclick="showTab('registrator')" id="tab-registrator"><i class="ti ti-video"></i>Registrator</button>
+    <button class="nav-btn" onclick="showTab('chiqim')" id="tab-chiqim"><i class="ti ti-trending-down"></i>Chiqim</button>
+  </div>
+
+  <!-- HISOBOT -->
+  <div class="section active" id="sec-hisobot">
+
+    <!-- Foyda -->
+    <div class="foyda-row" id="foyda-row">
+      <div class="fl">💰 Sof foyda (bugun)</div>
+      <div class="fv" id="foyda-val">—</div>
+    </div>
+
+    <!-- Asosiy statistika -->
+    <div class="stats-grid3">
+      <div class="stat green"><div class="val" id="s-total">—</div><div class="lbl">Jami tushum</div></div>
+      <div class="stat red"><div class="val" id="s-chiqim">—</div><div class="lbl">Jami chiqim</div></div>
+      <div class="stat gray"><div class="val" id="s-count">—</div><div class="lbl">Xizmatlar soni</div></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat blue"><div class="val" id="s-today">—</div><div class="lbl">Bugungi tushum</div></div>
+      <div class="stat yellow"><div class="val" id="s-today-chiqim">—</div><div class="lbl">Bugungi chiqim</div></div>
+    </div>
+
+    <!-- Xizmat bo'yicha -->
+    <div class="card">
+      <h2><i class="ti ti-chart-pie" style="font-size:16px"></i>Xizmat bo'yicha (bugun)</h2>
+      <div class="stats-grid3">
+        <div class="stat purple"><div class="val" id="b-radar">—</div><div class="lbl">📡 Radar</div></div>
+        <div class="stat blue"><div class="val" id="b-karta">—</div><div class="lbl">💳 Karta</div></div>
+        <div class="stat green"><div class="val" id="b-ksero">—</div><div class="lbl">🖨️ Ksero</div></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat gray"><div class="val" id="b-flesh">—</div><div class="lbl">💾 Flesh</div></div>
+        <div class="stat yellow"><div class="val" id="b-registrator">—</div><div class="lbl">📹 Registrator</div></div>
+      </div>
+    </div>
+
+    <!-- Haftalik grafik -->
+    <div class="card">
+      <h2><i class="ti ti-calendar-stats" style="font-size:16px"></i>Haftalik tushum</h2>
+      <div class="bar-chart" id="week-chart"></div>
+    </div>
+
+    <!-- Operatsiyalar -->
+    <div class="card">
+      <h2><i class="ti ti-list" style="font-size:16px"></i>Operatsiyalar</h2>
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="filterTxns('barchasi',this)">Barchasi</button>
+        <button class="filter-btn" onclick="filterTxns('radar',this)">📡 Radar</button>
+        <button class="filter-btn" onclick="filterTxns('karta',this)">💳 Karta</button>
+        <button class="filter-btn" onclick="filterTxns('ksero',this)">🖨️ Ksero</button>
+        <button class="filter-btn" onclick="filterTxns('flesh',this)">💾 Flesh</button>
+        <button class="filter-btn" onclick="filterTxns('registrator',this)">📹 Registrator</button>
+        <button class="filter-btn" onclick="filterTxns('chiqim',this)">📉 Chiqim</button>
+      </div>
+      <div class="txn-list" id="txn-list">
+        <div class="loading">Yuklanmoqda...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RADAR -->
+  <div class="section" id="sec-radar">
+    <div class="card">
+      <h2><i class="ti ti-radar" style="font-size:16px"></i>Radar yangilash (obnovleniya)</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Qurilma modeli</label>
+          <select id="r-model" onchange="toggleCustom('r-model')">
+            <option>Navitel</option>
+            <option>Garmin</option>
+            <option>Pioneer</option>
+            <option>Kenwood</option>
+            <option>Sony</option>
+            <option>JVC</option>
+            <option>Sigma</option>
+            <option>Sygic</option>
+            <option>2GIS</option>
+            <option>Boshqa</option>
+          </select>
+          <input type="text" id="r-model-custom" placeholder="Model nomini yozing..." style="display:none;margin-top:6px">
+        </div>
+        <div class="form-group">
+          <label>Xizmat turi</label>
+          <select id="r-type">
+            <option>Xarita yangilash</option>
+            <option>Dastur yangilash</option>
+            <option>To'liq sozlash</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Narxi (so'm)</label>
+          <input type="text" id="r-price" placeholder="50 000" inputmode="numeric" oninput="fmtInput(this)">
+        </div>
+        <div class="form-group">
+          <label>Mijoz ismi</label>
+          <input type="text" id="r-name" placeholder="Ismi">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>To'lov turi</label>
+        <div class="tolov-row">
+          <button type="button" class="tolov-btn sel-naqt" id="r-tolov-naqt" onclick="selTolov('r','naqt')">💵 Naqt</button>
+          <button type="button" class="tolov-btn" id="r-tolov-karta" onclick="selTolov('r','karta')">💳 Karta</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Izoh (ixtiyoriy)</label>
+        <input type="text" id="r-note" placeholder="">
+      </div>
+      <button class="btn-primary" id="btn-radar" onclick="addTxn('radar')">+ Qo'shish</button>
+      <div class="alert" id="r-alert">✓ Radar xizmati saqlandi!</div>
+      <div class="alert alert-err" id="r-err">✗ Xatolik yuz berdi, qayta urining.</div>
+    </div>
+  </div>
+
+  <!-- KARTA -->
+  <div class="section" id="sec-karta">
+    <div class="card">
+      <h2><i class="ti ti-credit-card" style="font-size:16px"></i>Kartadan kartaga o'tkazish</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Yuboruvchi</label>
+          <input type="text" id="k-from" placeholder="Ismi yoki karta raqami">
+        </div>
+        <div class="form-group">
+          <label>Qabul qiluvchi</label>
+          <input type="text" id="k-to" placeholder="Ismi yoki karta raqami">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Miqdor (so'm)</label>
+          <input type="text" id="k-amount" placeholder="100 000" inputmode="numeric" oninput="fmtInput(this)">
+        </div>
+        <div class="form-group">
+          <label>Komissiya (so'm)</label>
+          <input type="text" id="k-fee" placeholder="5 000" inputmode="numeric" oninput="fmtInput(this)">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>To'lov turi</label>
+        <div class="tolov-row">
+          <button type="button" class="tolov-btn sel-naqt" id="k-tolov-naqt" onclick="selTolov('k','naqt')">💵 Naqt</button>
+          <button type="button" class="tolov-btn" id="k-tolov-karta" onclick="selTolov('k','karta')">💳 Karta</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Izoh (ixtiyoriy)</label>
+        <input type="text" id="k-note" placeholder="">
+      </div>
+      <button class="btn-primary" id="btn-karta" onclick="addTxn('karta')">+ Qo'shish</button>
+      <div class="alert" id="k-alert">✓ O'tkazma saqlandi!</div>
+      <div class="alert alert-err" id="k-err">✗ Xatolik yuz berdi, qayta urining.</div>
+    </div>
+  </div>
+
+  <!-- KSERO -->
+  <div class="section" id="sec-ksero">
+    <div class="card">
+      <h2><i class="ti ti-copy" style="font-size:16px"></i>Ksero / Kopiya</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Xizmat turi</label>
+          <select id="x-type">
+            <option>Fotokopiya (qora-oq)</option>
+            <option>Fotokopiya (rangli)</option>
+            <option>Skanerlash</option>
+            <option>Chop etish</option>
+            <option>Laminating</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sahifalar soni</label>
+          <input type="number" id="x-pages" placeholder="1" min="1" oninput="calcXTotal()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>1 sahifa narxi (so'm)</label>
+          <input type="text" id="x-price" placeholder="500" inputmode="numeric" oninput="fmtInput(this);calcXTotal();">
+        </div>
+        <div class="form-group">
+          <label>Jami summa</label>
+          <input type="text" id="x-total" placeholder="avtomatik" readonly style="background:#f4f6fb">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>To'lov turi</label>
+        <div class="tolov-row">
+          <button type="button" class="tolov-btn sel-naqt" id="x-tolov-naqt" onclick="selTolov('x','naqt')">💵 Naqt</button>
+          <button type="button" class="tolov-btn" id="x-tolov-karta" onclick="selTolov('x','karta')">💳 Karta</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Izoh (ixtiyoriy)</label>
+        <input type="text" id="x-note" placeholder="">
+      </div>
+      <button class="btn-primary" id="btn-ksero" onclick="addTxn('ksero')">+ Qo'shish</button>
+      <div class="alert" id="x-alert">✓ Ksero xizmati saqlandi!</div>
+      <div class="alert alert-err" id="x-err">✗ Xatolik yuz berdi, qayta urining.</div>
+    </div>
+  </div>
+
+  <!-- FLESH -->
+  <div class="section" id="sec-flesh">
+    <div class="card">
+      <h2><i class="ti ti-usb" style="font-size:16px"></i>Flesh / USB yozish</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Flesh hajmi</label>
+          <select id="f-size">
+            <option>4 GB</option>
+            <option>8 GB</option>
+            <option>16 GB</option>
+            <option>32 GB</option>
+            <option>64 GB</option>
+            <option>128 GB</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Xizmat turi</label>
+          <select id="f-type">
+            <option>Musiqa yozish</option>
+            <option>Video yozish</option>
+            <option>Hujjat ko'chirish</option>
+            <option>Dastur yozish</option>
+            <option>Formatlash + yozish</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Narxi (so'm)</label>
+          <input type="text" id="f-price" placeholder="10 000" inputmode="numeric" oninput="fmtInput(this)">
+        </div>
+        <div class="form-group">
+          <label>Mijoz ismi (ixtiyoriy)</label>
+          <input type="text" id="f-name" placeholder="Ismi">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>To'lov turi</label>
+        <div class="tolov-row">
+          <button type="button" class="tolov-btn sel-naqt" id="f-tolov-naqt" onclick="selTolov('f','naqt')">💵 Naqt</button>
+          <button type="button" class="tolov-btn" id="f-tolov-karta" onclick="selTolov('f','karta')">💳 Karta</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Izoh (ixtiyoriy)</label>
+        <input type="text" id="f-note" placeholder="">
+      </div>
+      <button class="btn-primary" id="btn-flesh" onclick="addTxn('flesh')">+ Qo'shish</button>
+      <div class="alert" id="f-alert">✓ Flesh xizmati saqlandi!</div>
+      <div class="alert alert-err" id="f-err">✗ Xatolik yuz berdi, qayta urining.</div>
+    </div>
+  </div>
+
+  <!-- REGISTRATOR -->
+  <div class="section" id="sec-registrator">
+    <div class="card">
+      <h2><i class="ti ti-video" style="font-size:16px"></i>Registrator tuzatish</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Qurilma modeli</label>
+          <select id="reg-model" onchange="toggleCustom('reg-model')">
+            <option>Blackvue</option>
+            <option>Viofo</option>
+            <option>70mai</option>
+            <option>Xiaomi</option>
+            <option>Prestigio</option>
+            <option>Intego</option>
+            <option>Roadgid</option>
+            <option>Street Storm</option>
+            <option>Boshqa</option>
+          </select>
+          <input type="text" id="reg-model-custom" placeholder="Model nomini yozing..." style="display:none;margin-top:6px">
+        </div>
+        <div class="form-group">
+          <label>Muammo turi</label>
+          <select id="reg-type">
+            <option>Sozlash / Dastur yangilash</option>
+            <option>Karta formatlash</option>
+            <option>Tasvir sifati sozlash</option>
+            <option>GPS sozlash</option>
+            <option>Ovoz / Mikrofon tuzatish</option>
+            <option>Ulanish muammosi</option>
+            <option>To'liq tekshirish</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Narxi (so'm)</label>
+          <input type="text" id="reg-price" placeholder="30 000" inputmode="numeric" oninput="fmtInput(this)">
+        </div>
+        <div class="form-group">
+          <label>Mijoz ismi (ixtiyoriy)</label>
+          <input type="text" id="reg-name" placeholder="Ismi">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>To'lov turi</label>
+        <div class="tolov-row">
+          <button type="button" class="tolov-btn sel-naqt" id="reg-tolov-naqt" onclick="selTolov('reg','naqt')">💵 Naqt</button>
+          <button type="button" class="tolov-btn" id="reg-tolov-karta" onclick="selTolov('reg','karta')">💳 Karta</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Izoh (ixtiyoriy)</label>
+        <input type="text" id="reg-note" placeholder="">
+      </div>
+      <button class="btn-primary" id="btn-registrator" onclick="addTxn('registrator')">+ Qo'shish</button>
+      <div class="alert" id="reg-alert">✓ Registrator xizmati saqlandi!</div>
+      <div class="alert alert-err" id="reg-err">✗ Xatolik yuz berdi, qayta urining.</div>
+    </div>
+  </div>
+
+  <!-- CHIQIM -->
+  <div class="section" id="sec-chiqim">
+    <div class="card">
+      <h2><i class="ti ti-trending-down" style="font-size:16px"></i>Chiqim / Xarajat</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Chiqim turi</label>
+          <select id="c-type">
+            <option>Ijara</option>
+            <option>Maosh</option>
+            <option>Internet / Aloqa</option>
+            <option>Elektr / Kommunal</option>
+            <option>Kancelvariya</option>
+            <option>Uskunalar</option>
+            <option>Boshqa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Miqdor (so'm)</label>
+          <input type="text" id="c-amount" placeholder="100 000" inputmode="numeric" oninput="fmtInput(this)">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Izoh (ixtiyoriy)</label>
+        <input type="text" id="c-note" placeholder="">
+      </div>
+      <button class="btn-danger" id="btn-chiqim" onclick="addTxn('chiqim')">− Chiqim qo'shish</button>
+      <div class="alert" id="c-alert">✓ Chiqim saqlandi!</div>
+      <div class="alert alert-err" id="c-err">✗ Xatolik yuz berdi, qayta urining.</div>
+    </div>
+
+    <!-- Chiqimlar ro'yxati -->
+    <div class="card">
+      <h2><i class="ti ti-list" style="font-size:16px"></i>Chiqimlar ro'yxati</h2>
+      <div class="txn-list" id="chiqim-list">
+        <div class="loading">Yuklanmoqda...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var API = 'https://69e35f8f3327837a155312d8.mockapi.io/api/v1/carousels';
+var txns = [];
+var currentFilter = 'barchasi';
+
+function fmt(n){
+  if(n>=1000000) return (n/1000000).toFixed(1).replace('.',',')+' mln';
+  return Number(n).toLocaleString('uz-UZ').replace(/,/g,' ');
+}
+
+document.getElementById('sana').textContent = new Date().toLocaleDateString('uz-UZ',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+function fmtInput(el){
+  var raw=el.value.replace(/\s/g,'').replace(/[^0-9]/g,'');
+  var cursor=el.selectionStart;
+  var beforeCursor=el.value.slice(0,cursor).replace(/\s/g,'').replace(/[^0-9]/g,'').length;
+  if(raw===''){el.value='';return;}
+  var formatted=Number(raw).toLocaleString('uz-UZ').replace(/,/g,' ');
+  el.value=formatted;
+  var newPos=0,count=0;
+  for(var i=0;i<formatted.length;i++){
+    if(/[0-9]/.test(formatted[i]))count++;
+    if(count===beforeCursor){newPos=i+1;break;}
+  }
+  el.setSelectionRange(newPos,newPos);
+}
+
+function parseRaw(id){
+  var v=document.getElementById(id).value.replace(/\s/g,'').replace(/[^0-9]/g,'');
+  return parseFloat(v)||0;
+}
+
+function selTolov(prefix, type){
+  var naqtBtn=document.getElementById(prefix+'-tolov-naqt');
+  var kartaBtn=document.getElementById(prefix+'-tolov-karta');
+  naqtBtn.className='tolov-btn'+(type==='naqt'?' sel-naqt':'');
+  kartaBtn.className='tolov-btn'+(type==='karta'?' sel-karta':'');
+}
+
+function getTolov(prefix){
+  var btn=document.getElementById(prefix+'-tolov-karta');
+  return btn&&btn.classList.contains('sel-karta')?'karta':'naqt';
+}
+
+function toggleCustom(selectId){
+  var sel=document.getElementById(selectId);
+  var inp=document.getElementById(selectId+'-custom');
+  if(!inp) return;
+  if(sel.value==='Boshqa'){
+    inp.style.display='block';
+    inp.focus();
+  } else {
+    inp.style.display='none';
+    inp.value='';
+  }
+}
+
+function getModel(selectId){
+  var sel=document.getElementById(selectId);
+  if(sel.value==='Boshqa'){
+    var custom=document.getElementById(selectId+'-custom');
+    return (custom&&custom.value.trim())||'Boshqa';
+  }
+  return sel.value;
+}
+
+
+  var p=parseFloat(document.getElementById('x-pages').value)||0;
+  var pr=parseRaw('x-price');
+  var total=p*pr;
+  document.getElementById('x-total').value=total?Number(total).toLocaleString('uz-UZ').replace(/,/g,' '):'';
+}
+
+function showTab(tab){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('sec-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function showAlert(id){
+  var el=document.getElementById(id);
+  el.style.display='block';
+  setTimeout(function(){el.style.display='none';},2500);
+}
+
+function todayStr(){
+  return new Date().toLocaleDateString('uz-UZ',{day:'2-digit',month:'2-digit'});
+}
+
+function loadTxns(){
+  fetch(API)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      txns=data.sort(function(a,b){return b.id-a.id;});
+      updateStats();
+      renderList();
+      renderChiqimList();
+      renderWeekChart();
+    })
+    .catch(function(){
+      document.getElementById('txn-list').innerHTML='<div class="empty">Serverga ulanib bo\'lmadi.</div>';
+    });
+}
+
+function addTxn(type){
+  var t=new Date();
+  var timeStr=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0');
+  var dateStr=t.toLocaleDateString('uz-UZ',{day:'2-digit',month:'2-digit'});
+  var txn={type:type,time:dateStr+' '+timeStr};
+  var btnId='btn-'+type;
+
+  if(type==='radar'){
+    txn.model=getModel('r-model');
+    txn.stype=document.getElementById('r-type').value;
+    txn.amount=parseRaw('r-price');
+    txn.label=txn.model+' — '+txn.stype;
+    txn.note=document.getElementById('r-note').value;
+    txn.client=document.getElementById('r-name').value;
+    txn.tolov=getTolov('r');
+    txn.from=document.getElementById('k-from').value||'—';
+    txn.to=document.getElementById('k-to').value||'—';
+    txn.amount=parseRaw('k-fee');
+    txn.sum=parseRaw('k-amount');
+    txn.label=txn.from+' → '+txn.to;
+    txn.note=document.getElementById('k-note').value;
+    txn.tolov=getTolov('k');
+  } else if(type==='ksero'){
+    txn.stype=document.getElementById('x-type').value;
+    txn.pages=parseFloat(document.getElementById('x-pages').value)||0;
+    txn.amount=parseRaw('x-total');
+    txn.label=txn.stype+' ('+txn.pages+' bet)';
+    txn.note=document.getElementById('x-note').value;
+    txn.tolov=getTolov('x');
+  } else if(type==='flesh'){
+    txn.model=document.getElementById('f-size').value;
+    txn.stype=document.getElementById('f-type').value;
+    txn.amount=parseRaw('f-price');
+    txn.label=txn.model+' — '+txn.stype;
+    txn.note=document.getElementById('f-note').value;
+    txn.client=document.getElementById('f-name').value;
+    txn.tolov=getTolov('f');
+  } else if(type==='registrator'){
+    txn.model=getModel('reg-model');
+    txn.stype=document.getElementById('reg-type').value;
+    txn.amount=parseRaw('reg-price');
+    txn.label=txn.model+' — '+txn.stype;
+    txn.note=document.getElementById('reg-note').value;
+    txn.client=document.getElementById('reg-name').value;
+    txn.tolov=getTolov('reg');
+  } else if(type==='chiqim'){
+    txn.stype=document.getElementById('c-type').value;
+    txn.amount=parseRaw('c-amount');
+    txn.label=txn.stype;
+    txn.note=document.getElementById('c-note').value;
+  }
+
+  var btn=document.getElementById(btnId);
+  btn.disabled=true;
+  btn.textContent='Saqlanmoqda...';
+
+  fetch(API,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(txn)
+  })
+  .then(function(r){return r.json();})
+  .then(function(saved){
+    txns.unshift(saved);
+    updateStats();
+    renderList();
+    renderChiqimList();
+    renderWeekChart();
+
+    if(type==='radar'){
+      document.getElementById('r-price').value='';
+      document.getElementById('r-name').value='';
+      document.getElementById('r-note').value='';
+      document.getElementById('r-model').selectedIndex=0;
+      document.getElementById('r-model-custom').style.display='none';
+      document.getElementById('r-model-custom').value='';
+      showAlert('r-alert');
+    } else if(type==='karta'){
+      document.getElementById('k-from').value='';document.getElementById('k-to').value='';
+      document.getElementById('k-amount').value='';document.getElementById('k-fee').value='';
+      document.getElementById('k-note').value='';showAlert('k-alert');
+    } else if(type==='ksero'){
+      document.getElementById('x-pages').value='';document.getElementById('x-price').value='';
+      document.getElementById('x-total').value='';document.getElementById('x-note').value='';
+      showAlert('x-alert');
+    } else if(type==='flesh'){
+      document.getElementById('f-price').value='';document.getElementById('f-name').value='';
+      document.getElementById('f-note').value='';showAlert('f-alert');
+    } else if(type==='registrator'){
+      document.getElementById('reg-price').value='';
+      document.getElementById('reg-name').value='';
+      document.getElementById('reg-note').value='';
+      document.getElementById('reg-model').selectedIndex=0;
+      document.getElementById('reg-model-custom').style.display='none';
+      document.getElementById('reg-model-custom').value='';
+      showAlert('reg-alert');
+    } else if(type==='chiqim'){
+      document.getElementById('c-amount').value='';document.getElementById('c-note').value='';
+      showAlert('c-alert');
+    }
+  })
+  .catch(function(){
+    showAlert(type==='radar'?'r-err':type==='karta'?'k-err':type==='ksero'?'x-err':type==='flesh'?'f-err':type==='registrator'?'reg-err':'c-err');
+  })
+  .finally(function(){
+    btn.disabled=false;
+    btn.textContent=type==='chiqim'?'− Chiqim qo\'shish':'+ Qo\'shish';
+  });
+}
+
+function deleteTxn(id){
+  if(!confirm('O\'chirishni tasdiqlaysizmi?')) return;
+  fetch(API+'/'+id,{method:'DELETE'})
+    .then(function(){
+      txns=txns.filter(function(t){return t.id!=id;});
+      updateStats();renderList();renderChiqimList();renderWeekChart();
+    });
+}
+
+function updateStats(){
+  var today=todayStr();
+  var income=txns.filter(function(t){return t.type!=='chiqim';});
+  var expense=txns.filter(function(t){return t.type==='chiqim';});
+
+  var totalIn=income.reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+  var totalEx=expense.reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+  var todayIn=income.filter(function(t){return t.time&&t.time.startsWith(today);}).reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+  var todayEx=expense.filter(function(t){return t.time&&t.time.startsWith(today);}).reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+
+  var radarToday=txns.filter(function(t){return t.type==='radar'&&t.time&&t.time.startsWith(today);}).reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+  var kartaToday=txns.filter(function(t){return t.type==='karta'&&t.time&&t.time.startsWith(today);}).reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+  var kseroToday=txns.filter(function(t){return t.type==='ksero'&&t.time&&t.time.startsWith(today);}).reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+  var fleshToday=txns.filter(function(t){return t.type==='flesh'&&t.time&&t.time.startsWith(today);}).reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+  var regToday=txns.filter(function(t){return t.type==='registrator'&&t.time&&t.time.startsWith(today);}).reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+
+  document.getElementById('s-total').textContent=fmt(totalIn)+' so\'m';
+  document.getElementById('s-chiqim').textContent=fmt(totalEx)+' so\'m';
+  document.getElementById('s-count').textContent=income.length+' ta';
+  document.getElementById('s-today').textContent=fmt(todayIn)+' so\'m';
+  document.getElementById('s-today-chiqim').textContent=fmt(todayEx)+' so\'m';
+  document.getElementById('b-radar').textContent=fmt(radarToday)+' so\'m';
+  document.getElementById('b-karta').textContent=fmt(kartaToday)+' so\'m';
+  document.getElementById('b-ksero').textContent=fmt(kseroToday)+' so\'m';
+  document.getElementById('b-flesh').textContent=fmt(fleshToday)+' so\'m';
+  document.getElementById('b-registrator').textContent=fmt(regToday)+' so\'m';
+
+  var foyda=todayIn-todayEx;
+  var foydaEl=document.getElementById('foyda-val');
+  foydaEl.textContent=(foyda>=0?'+':'')+fmt(foyda)+' so\'m';
+  foydaEl.style.color=foyda>=0?'#059669':'#ef4444';
+}
+
+function renderWeekChart(){
+  var days=['Du','Se','Ch','Pa','Ju','Sh','Ya'];
+  var now=new Date();
+  var cols=[];
+  for(var i=6;i>=0;i--){
+    var d=new Date(now);d.setDate(d.getDate()-i);
+    var ds=d.toLocaleDateString('uz-UZ',{day:'2-digit',month:'2-digit'});
+    var sum=txns.filter(function(t){return t.type!=='chiqim'&&t.time&&t.time.startsWith(ds);}).reduce(function(a,b){return a+(parseFloat(b.amount)||0);},0);
+    cols.push({label:days[d.getDay()],val:sum,today:i===0});
+  }
+  var maxVal=Math.max.apply(null,cols.map(function(c){return c.val;}))||1;
+  var html=cols.map(function(c){
+    var h=Math.max(Math.round((c.val/maxVal)*64),c.val>0?4:2);
+    var color=c.today?'#378ADD':'#BFDBFE';
+    return '<div class="bar-col">'
+      +'<div class="bar-val">'+(c.val>0?fmt(c.val):'')+'</div>'
+      +'<div class="bar-in" style="height:'+h+'px;background:'+color+'"></div>'
+      +'<div class="bar-lbl">'+c.label+'</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('week-chart').innerHTML=html;
+}
+
+function filterTxns(filter, btn){
+  currentFilter=filter;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderList();
+}
+
+function renderList(){
+  var list=document.getElementById('txn-list');
+  var filtered=currentFilter==='barchasi'?txns:txns.filter(function(t){return t.type===currentFilter;});
+  if(filtered.length===0){list.innerHTML="<div class='empty'>Bu bo'limda operatsiya yo'q.</div>";return;}
+  var icons={radar:'📡',karta:'💳',ksero:'🖨️',flesh:'💾',registrator:'📹',chiqim:'📉'};
+  var colors={radar:'badge-radar',karta:'badge-karta',ksero:'badge-ksero',flesh:'badge-radar',registrator:'badge-karta',chiqim:'badge-chiqim'};
+  var labels={radar:'Radar',karta:'Karta',ksero:'Ksero',flesh:'Flesh',registrator:'Registrator',chiqim:'Chiqim'};
+  list.innerHTML=filtered.slice(0,50).map(function(t){
+    var sub=t.note?' · '+t.note:'';
+    var clientInfo=t.client?' · '+t.client:'';
+    var ico=icons[t.type]||'📋';
+    var color=colors[t.type]||'badge-ksero';
+    var lbl=labels[t.type]||t.type;
+    var isChiqim=t.type==='chiqim';
+    var tolovBadge='';
+    if(!isChiqim&&t.tolov){
+      tolovBadge='&nbsp;<span class="badge '+(t.tolov==='karta'?'badge-karta-tolov':'badge-naqt')+'">'+(t.tolov==='karta'?'💳 Karta':'💵 Naqt')+'</span>';
+    }
+    return '<div class="txn-item">'
+      +'<div class="ico">'+ico+'</div>'
+      +'<div class="info">'
+      +'<div class="name">'+(t.label||'—')+clientInfo+'</div>'
+      +'<div class="time">'+(t.time||'')+sub+' &nbsp;<span class="badge '+color+'">'+lbl+'</span>'+tolovBadge+'</div>'
+      +'</div>'
+      +'<div class="'+(isChiqim?'amt-minus':'amt-plus')+'">'+(isChiqim?'−':'+')+''+fmt(t.amount)+' so\'m</div>'
+      +'<button class="del-btn" onclick="deleteTxn(\''+t.id+'\')" title="O\'chirish">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+function renderChiqimList(){
+  var list=document.getElementById('chiqim-list');
+  var chiqimlar=txns.filter(function(t){return t.type==='chiqim';});
+  if(chiqimlar.length===0){list.innerHTML="<div class='empty'>Hali chiqim yo'q.</div>";return;}
+  list.innerHTML=chiqimlar.slice(0,30).map(function(t){
+    var sub=t.note?' · '+t.note:'';
+    return '<div class="txn-item">'
+      +'<div class="ico">📉</div>'
+      +'<div class="info">'
+      +'<div class="name">'+(t.label||'—')+'</div>'
+      +'<div class="time">'+(t.time||'')+sub+'</div>'
+      +'</div>'
+      +'<div class="amt-minus">−'+fmt(t.amount)+' so\'m</div>'
+      +'<button class="del-btn" onclick="deleteTxn(\''+t.id+'\')" title="O\'chirish">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+loadTxns();
+</script>
+</body>
+</html>
